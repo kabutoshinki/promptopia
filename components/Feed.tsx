@@ -7,7 +7,7 @@ import PromptCard from "./PromptCard";
 const PromptCardList = ({ data, handleTagClick }: any) => {
   return (
     <div className="mt-16 prompt_layout">
-      {data.map((post) => (
+      {data.map((post: any) => (
         <PromptCard key={post._id} post={post} handleTagClick={handleTagClick} />
       ))}
     </div>
@@ -15,12 +15,12 @@ const PromptCardList = ({ data, handleTagClick }: any) => {
 };
 
 const Feed = () => {
-  const [allPosts, setAllPosts] = useState([]);
+  const [allPosts, setAllPosts] = useState<any[]>([]);
 
   // Search states
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
-  const [searchedResults, setSearchedResults] = useState([]);
+  const [searchedResults, setSearchedResults] = useState<any[]>([]);
 
   const fetchPosts = async () => {
     const response = await fetch("/api/prompt");
@@ -33,33 +33,40 @@ const Feed = () => {
     fetchPosts();
   }, []);
 
-  // const filterPrompts = (searchtext: string) => {
-  //   const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
-  //   return allPosts.filter(
-  //     (item) => regex.test(item?.creator?.username) || regex.test(item?.tag) || regex.test(item?.prompt)
-  //   );
-  // };
-
-  const filterPrompts = (searchText: string) => {
-    const regex = new RegExp(`\\b${searchText}`, "i"); // 'i' flag for case-insensitive search
+  const filterPrompts = (searchtext: string) => {
+    const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
     return allPosts.filter(
       (item) => regex.test(item?.creator?.username) || regex.test(item?.tag) || regex.test(item?.prompt)
     );
   };
 
+  // const filterPrompts = (searchText: string) => {
+  //   const regex = new RegExp(`${searchText}`, "i"); // 'i' flag for case-insensitive search
+  //   return allPosts.filter(
+  //     (item) => regex.test(item?.creator?.username) || regex.test(item?.tag) || regex.test(item?.prompt)
+  //   );
+  // };
+
   const handleSearchChange = (e: any) => {
     console.log(e.target.value);
 
-    clearTimeout(searchTimeout);
+    // clearTimeout(searchTimeout);
+    if (searchTimeout) {
+      clearTimeout(searchTimeout); // Clear the previous timeout if it exists
+    }
     setSearchText(e.target.value);
 
     // debounce method
-    setSearchTimeout(
-      setTimeout(() => {
-        const searchResult = filterPrompts(e?.target?.value);
-        setSearchedResults(searchResult);
-      }, 500)
-    );
+    // setSearchTimeout(
+    //   setTimeout(() => {
+    //     const searchResult = filterPrompts(e?.target?.value);
+    //     setSearchedResults(searchResult);
+    //   }, 500)
+    // );
+    const timeoutId = setTimeout(() => {
+      const searchResult = filterPrompts(e?.target?.value);
+      setSearchedResults(searchResult);
+    }, 500);
   };
 
   const handleTagClick = (tagName: any) => {

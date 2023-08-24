@@ -1,6 +1,6 @@
 import PromptCard from "./PromptCard";
 
-const Profile = ({ name, desc, data, handleEdit, handleDelete }) => {
+const Profile = ({ name, desc, data, handleEdit, handleDelete }: any) => {
   console.log("data");
   console.log(data);
 
@@ -13,12 +13,13 @@ const Profile = ({ name, desc, data, handleEdit, handleDelete }) => {
 
       <div className="mt-10 prompt_layout">
         {data?.length != 0 ? (
-          data.map((post) => (
+          data.map((post: any) => (
             <PromptCard
               key={post._id}
               post={post}
               handleEdit={() => handleEdit && handleEdit(post)}
               handleDelete={() => handleDelete && handleDelete(post)}
+              handleTagClick={""}
             />
           ))
         ) : (

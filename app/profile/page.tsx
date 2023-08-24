@@ -5,23 +5,29 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Profile from "@components/Profile";
+interface User {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
 
 const MyProfile = () => {
   const router = useRouter();
   const { data: session } = useSession();
 
-  const [myPosts, setMyPosts] = useState([]);
+  const [myPosts, setMyPosts] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(`/api/users/${session?.user?.id}/posts`);
+      const response = await fetch(`/api/users/${(session?.user as User)?.id}/posts`);
       const data = await response.json();
 
       setMyPosts(data);
     };
 
-    if (session?.user?.id) fetchPosts();
-  }, [session?.user?.id]);
+    if ((session?.user as User)?.id) fetchPosts();
+  }, [(session?.user as User)?.id]);
 
   const handleEdit = (post: any) => {
     router.push(`/update-prompt?id=${post._id}`);
@@ -36,7 +42,7 @@ const MyProfile = () => {
           method: "DELETE",
         });
 
-        const filteredPosts = myPosts.filter((item) => item._id !== post._id);
+        const filteredPosts = myPosts.filter((item) => item?._id !== post._id);
 
         setMyPosts(filteredPosts);
       } catch (error) {

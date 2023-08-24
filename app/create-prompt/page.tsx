@@ -5,10 +5,15 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 import Form from "@components/Form";
-
+interface User {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
 const CreatePrompt = () => {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session } = useSession<any>();
 
   const [submitting, setIsSubmitting] = useState(false);
   const [post, setPost] = useState({ prompt: "", tag: "" });
@@ -22,7 +27,7 @@ const CreatePrompt = () => {
         method: "POST",
         body: JSON.stringify({
           prompt: post.prompt,
-          userId: session?.user?.id as string,
+          userId: (session?.user as User)?.id,
           tag: post.tag,
         }),
       });
